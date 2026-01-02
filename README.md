@@ -62,27 +62,31 @@ To route your traffic through this proxy:
 
 ```mermaid
 graph TD
-    User["👤 Client / Browser"] -->|HTTP Request| Proxy["🛡️ Proxy Server (GUI)"]
+    %% --- Styles ---
+    classDef client fill:#38BDF8,stroke:#0f172a,stroke-width:2px,color:black;
+    classDef server fill:#10B981,stroke:#047857,stroke-width:2px,color:white;
+    classDef internet fill:#6366f1,stroke:#4338ca,stroke-width:2px,color:white;
+    classDef block fill:#EF4444,stroke:#b91c1c,stroke-width:2px,color:white;
+    classDef decision fill:#F59E0B,stroke:#b45309,stroke-width:2px,color:white;
+
+    %% --- Nodes ---
+    User(("👤 User/Client")):::client -->|HTTP Request| Proxy["🛡️ Proxy GUI"]:::server
     
-    subgraph "Proxy Internal Logic"
-        Proxy -->|Parse| Handler{Request Type?}
-        Handler -->|HTTPS CONNECT| Tunnel["🔒 TCP Tunnel"]
-        Handler -->|HTTP GET| CacheCheck{In Cache?}
+    subgraph Internal ["⚡ Proxy Internal Logic"]
+        direction TB
+        Proxy --> Parser{"Request Type?"}:::decision
+        Parser -->|HTTPS CONNECT| Tunnel["🔒 TCP Tunnel"]:::server
+        Parser -->|HTTP GET| CacheCheck{"In Cache?"}:::decision
         
-        CacheCheck -- Yes --> ReturnCache["📦 Return Cached Data"]
-        CacheCheck -- No --> Fetch["🌍 Fetch from Internet"]
+        CacheCheck -- Yes --> ReturnCache["📦 Return Cache"]:::server
+        CacheCheck -- No --> Fetch["🌍 Fetch Data"]:::server
         
-        Fetch --> Filter{Blacklisted?}
-        Filter -- Yes --> Block["🚫 403 Access Denied"]
-        Filter -- No --> Internet["☁️ Web Server"]
+        Fetch --> Filter{"Blacklisted?"}:::decision
+        Filter -- Yes --> Block["🚫 403 Blocked"]:::block
+        Filter -- No --> Web["☁️ Web Server"]:::internet
     end
     
-    Internet -->|Response| Proxy
-    Tunnel <-->|Encrypted Stream| Internet
+    Web -->|Response| Proxy
+    Tunnel <-->|Encrypted Stream| Web
     ReturnCache -->|Response| User
     Block -->|Error Page| User
-    ```
-
-   ## 📜 License
-This project is open-source and available under the MIT License.
-Developed by Amir Khedri
