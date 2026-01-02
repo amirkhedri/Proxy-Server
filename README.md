@@ -77,10 +77,12 @@ graph TD
         Filter -- No --> Internet["☁️ Web Server"]
     end
     
-    Internet -->|Response| Proxy
+   Internet -->|Response| Proxy
     Tunnel <-->|Encrypted Stream| Internet
     ReturnCache -->|Response| User
     Block -->|Error Page| User
+    ```
+    
 ## 📜 License
 This project is open-source and available under the MIT License.
 
