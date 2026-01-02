@@ -62,19 +62,19 @@ Unlike standard command-line proxies, this "Ultimate Edition" features a robust 
 
 ```mermaid
 graph TD
-    User[👤 Client / Browser] -->|HTTP Request| Proxy[🛡️ Proxy Server (GUI)]
+    User["👤 Client / Browser"] -->|HTTP Request| Proxy["🛡️ Proxy Server (GUI)"]
     
     subgraph "Proxy Internal Logic"
         Proxy -->|Parse| Handler{Request Type?}
-        Handler -->|HTTPS CONNECT| Tunnel[🔒 TCP Tunnel]
+        Handler -->|HTTPS CONNECT| Tunnel["🔒 TCP Tunnel"]
         Handler -->|HTTP GET| CacheCheck{In Cache?}
         
-        CacheCheck -- Yes --> ReturnCache[📦 Return Cached Data]
-        CacheCheck -- No --> Fetch[🌍 Fetch from Internet]
+        CacheCheck -- Yes --> ReturnCache["📦 Return Cached Data"]
+        CacheCheck -- No --> Fetch["🌍 Fetch from Internet"]
         
         Fetch --> Filter{Blacklisted?}
-        Filter -- Yes --> Block[🚫 403 Access Denied]
-        Filter -- No --> Internet[☁️ Web Server]
+        Filter -- Yes --> Block["🚫 403 Access Denied"]
+        Filter -- No --> Internet["☁️ Web Server"]
     end
     
     Internet -->|Response| Proxy
