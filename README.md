@@ -59,13 +59,28 @@ Unlike standard command-line proxies, this "Ultimate Edition" features a robust 
 4.  Browse the web. You will see requests appearing in the "TERMINAL" tab of the application.
 
 ## 🏗️ Architecture
-The project follows a modular structure integrated into a single executable script:
 
-* **`UltimateProxyGUI`:** Manages the Tkinter main loop, updates real-time graphs, and handles user interactions.
-* **`ClientHandler`:** A threaded class responsible for parsing protocols. [cite_start]It distinguishes between standard HTTP requests and HTTPS `CONNECT` tunnels[cite: 44, 49].
-* [cite_start]**`StatsEngine`:** A thread-safe singleton that tracks active connections, bytes sent, and cache hits[cite: 71].
-* [cite_start]**`handle_https`:** Uses non-blocking I/O to bridge data between the client and the secure target server[cite: 55].
-
+```mermaid
+graph TD
+    User[👤 Client / Browser] -->|HTTP Request| Proxy[🛡️ Proxy Server (GUI)]
+    
+    subgraph "Proxy Internal Logic"
+        Proxy -->|Parse| Handler{Request Type?}
+        Handler -->|HTTPS CONNECT| Tunnel[🔒 TCP Tunnel]
+        Handler -->|HTTP GET| CacheCheck{In Cache?}
+        
+        CacheCheck -- Yes --> ReturnCache[📦 Return Cached Data]
+        CacheCheck -- No --> Fetch[🌍 Fetch from Internet]
+        
+        Fetch --> Filter{Blacklisted?}
+        Filter -- Yes --> Block[🚫 403 Access Denied]
+        Filter -- No --> Internet[☁️ Web Server]
+    end
+    
+    Internet -->|Response| Proxy
+    Tunnel <-->|Encrypted Stream| Internet
+    ReturnCache -->|Response| User
+    Block -->|Error Page| User
 ## 📜 License
 This project is open-source and available under the MIT License.
 
