@@ -40,8 +40,7 @@ Unlike standard command-line proxies, this "Ultimate Edition" features a robust 
 ### Running the Server
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/amirkhedri/Proxy-Server.git](https://github.com/amirkhedri/Proxy-Server.git)
-    cd Proxy-Server
+    git clone https://github.com/amirkhedri/Proxy-Server.git
     ```
 2.  Run the application:
     ```bash
